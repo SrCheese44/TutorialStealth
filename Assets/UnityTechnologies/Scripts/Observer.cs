@@ -8,20 +8,30 @@ public class Observer : MonoBehaviour
     bool m_IsPlayerInRange;
     public GameEnding gameEnding;
 
+    private float timerSpottedGameOver = 0.0f;
+
+    public AudioSource spottedSound;
+
+    public GameObject spottedText;
+
     private void OnTriggerEnter(Collider other)
     {
 
         if (other.transform == player)
         {
+            spottedText.SetActive(true);
             m_IsPlayerInRange = true;
+            spottedSound.Play();
         }
     }
-    //Dependiendo de si el personaje está en line of sight, el booleana será true o false
+    //Dependiendo de si el personaje está en line of sight, la booleana será true o false
     void OnTriggerExit(Collider other)
     {
         if (other.transform == player)
         {
             m_IsPlayerInRange = false;
+            timerSpottedGameOver = 0.0f;
+            spottedText.SetActive(false);
         }
     }
 
@@ -37,10 +47,20 @@ public class Observer : MonoBehaviour
             {
                 if (raycastHit.collider.transform == player)
                 {
-                    gameEnding.CaughtPlayer();
+                    //Timer con su comprobante que confirma el paso de dos segundos
+                    timerSpottedGameOver += Time.deltaTime;
+                    Debug.Log(timerSpottedGameOver);
+
+                    if(timerSpottedGameOver >= 2.0f)
+                    {
+                      gameEnding.CaughtPlayer();
+
+                    }
                 }
             }
+     
         }
+       
     }
 
 }
